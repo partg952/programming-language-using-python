@@ -5,7 +5,21 @@ import pafy;
 import keyboard as kb;
 import multiprocessing;
 
+
+
 previous_command = [];
+command_summary = [
+    'prev - to check previous command entered',
+    'clear - to clear the screen',
+    'num + num - to add the numbers',
+    'num - num - to subtract the numbers',
+    'play /path/to/the/song.mp3 - plays the specified song',
+    'youtube video-link - opens the youtube video on vlc player',
+    'sort(num1,num2,num3) - to sort the numbers',
+    'print(statement) - to print a specific statement'
+]
+
+
 
 def add_to_array(command):
     previous_command.append(command)
@@ -97,5 +111,8 @@ while True:
                         pass;    
         elif "prev" in input_string:
             for  i in previous_command:
-                print(i);                        
+                print(i);     
+        elif "help" in input_string:
+                for i in command_summary:
+                    print(i);            
     pass;   
