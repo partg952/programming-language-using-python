@@ -4,7 +4,7 @@ import vlc;
 import pafy;
 import keyboard as kb;
 import multiprocessing;
-
+import operator;
 
 
 previous_command = [];
@@ -19,6 +19,13 @@ command_summary = [
     'print(statement) - to print a specific statement'
 ]
 
+signs = {
+    "+":operator.add,
+    "-":operator.sub,
+    "*":operator.mul,
+    "/":operator.truediv
+}
+
 
 
 def add_to_array(command):
@@ -30,6 +37,24 @@ def swap(arr,first,second):
     arr[first] = arr[second];
     arr[second] = temp;
 
+def calculate(input_string,operator):
+    arr = [];
+    string = ''
+    number = 0;
+    for i in range(len(input_string[0])):
+        if i == len(input_string[0])-1:                    
+            string = string+input_string[0][i]
+            arr.append(int(string))
+            string = '';
+        elif input_string[0][i] != operator:
+            string = string+input_string[0][i]
+        else:
+            arr.append(int(string))
+            string = '';
+    
+    for i in arr:
+                number = signs[operator](i,number);          
+    return number;
 while True:
     input_string = input(">").split();
                                  
@@ -41,19 +66,9 @@ while True:
               else:
                    os.system("clear")    
         elif "+" in input_string[0]:
-            number = 0;
-            for i in input_string[0]:
-                if i!="+":
-                    i = int(i);
-                    number = number+i;
-            print(number);
+            print(calculate(input_string,"+"))
         elif "-" in input_string[0]:
-            number = 0;
-            for i in input_string[0]:
-                if i!="-":
-                    i = int(i);
-                    number = i-number;
-            print(number*-1 ); 
+           print(calculate(input_string,"-")*-1)    
         elif "print" in input_string[0]:
             input_string = str(input_string).replace("print(","");
             input_string = str(input_string).replace(")","");
@@ -74,8 +89,7 @@ while True:
         
         elif "play" in input_string[0]:
             if ("mp3" or "wav") in input_string[1]:
-                process = multiprocessing.Process(target=playsound,args=(input_string[1],))
-                try:
+                    process = multiprocessing.Process(target=playsound,args=(input_string[1],))
                     process.start()
                     while True:
                         response = input("Do You Want to Stop the music > ");
@@ -90,8 +104,7 @@ while True:
                                 pass;      
                         else:
                             pass;  
-                except:
-                    print("something went wrong");
+                
         elif "youtube" in input_string[0]:
             likeCount = []
             if "youtube.com" in input_string[1]:
