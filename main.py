@@ -5,6 +5,22 @@ import pafy;
 import keyboard as kb;
 import multiprocessing;
 import operator;
+var_array = {};
+class Variable:
+    name = '';
+   
+    def __init__(self,name,value):
+        self.name = name;
+        self.value = value;
+
+
+
+    def assign_variable(self):
+        name = self.name;
+        self.name = self.value;
+        print("assigned",self.value,"to",name);
+        var_array[name] = self.value;
+        print(var_array);
 
 
 previous_command = [];
@@ -28,6 +44,7 @@ signs = {
 
 
 
+
 def add_to_array(command):
     previous_command.append(command)
 
@@ -37,10 +54,9 @@ def swap(arr,first,second):
     arr[first] = arr[second];
     arr[second] = temp;
 
-def calculate(input_string,operator):
+def calculate(input_string,operator,number):
     arr = [];
     string = ''
-    number = 0;
     for i in range(len(input_string[0])):
         if i == len(input_string[0])-1:                    
             string = string+input_string[0][i]
@@ -56,7 +72,7 @@ def calculate(input_string,operator):
                 number = signs[operator](i,number);          
     return number;
 while True:
-    input_string = input(">").split();
+    input_string = input("reset > ").split();
                                  
     if len(input_string)!= 0:
         add_to_array(str(input_string).replace("[","").replace(']',''))    
@@ -66,16 +82,32 @@ while True:
               else:
                    os.system("clear")    
         elif "+" in input_string[0]:
-            print(calculate(input_string,"+"))
+            print(calculate(input_string,"+",0))
         elif "-" in input_string[0]:
-           print(calculate(input_string,"-")*-1)    
+           print(calculate(input_string,"-",0)*-1)   
+        elif "*" in input_string[0]:
+            print(calculate(input_string,"*",1))
+        elif "/" in input_string[0]:
+            input_string[0] = input_string[0][::-1]
+            print(calculate(input_string,"/",1))        
         elif "print" in input_string[0]:
-            input_string = str(input_string).replace("print(","");
-            input_string = str(input_string).replace(")","");
+            is_present = False;
+            if '"' in  input_string[0]:
+                is_present = True;
+            input_string[0] = str(input_string[0]).replace('print(',"").replace('"','')
+  
+            input_string[len(input_string)-1] = str(input_string[len(input_string)-1]).replace(')',"").replace('"','')
             for i in input_string:
-                if i.isalpha():
-                    print(i,end="")
-            print("\n")        
+                if i in var_array.keys() and is_present == False:
+                    if i == input_string[-1]:
+                        print(var_array[i],end="\n")
+                    else:
+                        print(var_array[i],end=" ")
+                else:
+                    if i == input_string[-1]:
+                        print(i,end="\n")
+                    else:
+                        print(i,end=" ")
         elif "sort" in input_string[0]:
             arr = [];
             for i in input_string[0]:
@@ -127,5 +159,23 @@ while True:
                 print(i);     
         elif "help" in input_string:
                 for i in command_summary:
-                    print(i);            
+                    print(i);    
+        elif "=" in input_string[0]:
+            arr = [];
+            string = ''
+            number = 0;
+            for i in range(len(input_string[0])):
+                if i == len(input_string[0])-1:                    
+                    string = string+input_string[0][i]
+                    arr.append(string)
+                    string = '';
+                elif input_string[0][i] != "=":
+                    string = string+input_string[0][i]
+                else:
+                    arr.append(string)
+                    string = '';
+
+            var = Variable(arr[0],arr[1]);
+            var.assign_variable();
+
     pass;   
